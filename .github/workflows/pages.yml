@@ -3,12 +3,6 @@ name: Deploy Mnimi website to GitHub Pages
 on:
   push:
     branches: [main]
-    paths:
-      - "index.html"
-      - "styles.css"
-      - "script.js"
-      - "assets/**"
-      - ".github/workflows/pages.yml"
   workflow_dispatch:
 
 permissions:
