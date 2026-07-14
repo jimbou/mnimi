@@ -144,7 +144,7 @@
         prompt = template.format(user=user, interval=interval)
         response = next(repeatable.sample(prompt))</code></pre>
 
-          <pre class="scope-code" data-code-mode="flat" hidden><code><span>model</span> = Persistent(model, <b>"/cache"</b>)
+          <pre class="scope-code" data-code-mode="flat" hidden><code><span>model</span> = SimpleCache(model)
 
 <i>for</i> user <i>in</i> [<b>"Alice"</b>, <b>"Bob"</b>, <b>"Alice"</b>]:
     <i>for</i> interval <i>in</i> intervals:

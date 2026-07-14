@@ -49,8 +49,8 @@ test("contains the explanatory, evidence, citation, and people sections", () => 
 test("shows a genuinely simple cache in flat-cache mode", () => {
   const flatCode = html.match(/<pre class="scope-code" data-code-mode="flat" hidden><code>([\s\S]*?)<\/code><\/pre>/)?.[1];
   assert.ok(flatCode, "expected a dedicated flat-cache code sample");
-  assert.match(flatCode, /Persistent\(model/);
-  assert.doesNotMatch(flatCode, /Independent|InMemory/);
+  assert.match(flatCode, /SimpleCache\(model\)/);
+  assert.doesNotMatch(flatCode, /Persistent|Independent|InMemory/);
   assert.match(script, /data-code-mode/);
 });
 
