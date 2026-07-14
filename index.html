@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Mnimi is a statistical-independence-aware cache design pattern for reproducible, efficient, and modular LLM workflows.">
+  <meta name="theme-color" content="#f7f6f1">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Mnimi — Statistical Independence Aware Caching for LLM Workflows">
+  <meta property="og:description" content="Cache LLM responses without quietly breaking the statistical assumptions of your workflow.">
+  <meta property="og:image" content="assets/mnimi-logo.svg">
+  <meta name="citation_title" content="Statistical Independence Aware Caching for LLM Workflows">
+  <meta name="citation_author" content="Yihan Dai">
+  <meta name="citation_author" content="Dimitrios Stamatios Bouras">
+  <meta name="citation_author" content="Haoxiang Jia">
+  <meta name="citation_author" content="Sergey Mechtaev">
+  <meta name="citation_publication_date" content="2026">
+  <meta name="citation_conference_title" content="3rd International Workshop on Large Language Models For Code">
+  <meta name="citation_doi" content="10.1145/3786181.3788729">
+  <meta name="citation_pdf_url" content="assets/mnimi-paper.pdf">
+  <title>Mnimi — Statistical Independence Aware Caching for LLM Workflows</title>
+  <link rel="icon" type="image/svg+xml" href="assets/mnimi-logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&amp;family=Source+Sans+3:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="topbar">
+    <div class="shell nav-shell">
+      <a class="wordmark" href="#top" aria-label="Mnimi home">
+        <img class="mnimi-mark wordmark-mark" src="assets/mnimi-logo.svg" alt="">
+        <span>Mnimi</span><b>.</b>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#idea">Idea</a>
+        <a href="#pattern">Pattern</a>
+        <a href="#evidence">Evidence</a>
+        <a href="#cite">Cite</a>
+        <a href="#people">People</a>
+      </nav>
+      <a class="nav-paper" href="https://dl.acm.org/doi/10.1145/3786181.3788729" target="_blank" rel="noopener">ACM paper <span aria-hidden="true">↗</span></a>
+    </div>
+    <div class="progress-track" aria-hidden="true"><span id="scroll-progress"></span></div>
+  </header>
+
+  <main id="main-content">
+    <section id="top" class="hero">
+      <div class="hero-streams" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">LLM4Code · ICSE 2026 · Rio de Janeiro</p>
+          <h1>Cache LLM responses. <em>Keep the statistics honest.</em></h1>
+          <p class="lede"><strong>Mnimi</strong> encodes statistical independence in the type of an LLM reference—making workflows reproducible, faster, and cheaper without collapsing the variation their algorithms need.</p>
+          <p class="authors-line">Yihan Dai <span>·</span> Dimitrios Stamatios Bouras <span>·</span> Haoxiang Jia <span>·</span> Sergey Mechtaev</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="https://dl.acm.org/doi/10.1145/3786181.3788729" target="_blank" rel="noopener">Read at ACM <span aria-hidden="true">↗</span></a>
+            <a class="button button-secondary" href="https://arxiv.org/abs/2511.22118" target="_blank" rel="noopener">arXiv <span aria-hidden="true">↗</span></a>
+            <a class="button button-secondary" href="https://github.com/msv-lab/mnimi" target="_blank" rel="noopener">Code <span aria-hidden="true">↗</span></a>
+            <a class="button button-quiet" href="assets/mnimi-paper.pdf">PDF <span aria-hidden="true">↓</span></a>
+          </div>
+        </div>
+
+        <aside class="hero-emblem" aria-label="Mnimi at a glance">
+          <div class="logo-orbit">
+            <span class="orbit-dot orbit-one"></span>
+            <span class="orbit-dot orbit-two"></span>
+            <span class="orbit-dot orbit-three"></span>
+            <img class="mnimi-mark hero-mark" src="assets/mnimi-logo.svg" alt="Mnimi, the Muse of memory">
+          </div>
+          <p class="note-kicker">Μνήμη · memory</p>
+          <p>Named for the primordial Muse of remembrance: structured memory for stochastic software.</p>
+          <dl>
+            <div><dt>Reuse</dt><dd>Repeatable</dd></div>
+            <div><dt>Diversity</dt><dd>Independent</dd></div>
+            <div><dt>Across runs</dt><dd>Persistent</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section abstract-section">
+      <div class="shell narrow">
+        <p class="section-label">Abstract</p>
+        <p class="abstract">Naive caches turn every repeated prompt into the same response. That saves time—but silently invalidates Pass@k, uncertainty estimates, repair loops, retries, and other probabilistic workflows. Mnimi makes the required sampling semantics explicit and composable.</p>
+      </div>
+    </section>
+
+    <section id="idea" class="section section-tint">
+      <div class="shell">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">The tension</p>
+            <h2>The same prompt can need the same answer—or a fresh one.</h2>
+          </div>
+          <p>Caching is not just a storage decision. In stochastic programs, it changes the meaning of a sample. Mnimi lets each algorithmic scope say which meaning it needs.</p>
+        </div>
+
+        <div class="tension-grid">
+          <article class="tension-card naive reveal">
+            <div class="card-topline"><span>Naive cache</span><b>one value</b></div>
+            <h3>Fast, but statistically wrong</h3>
+            <div class="prompt-row"><code>sample(prompt)</code><span>“131”</span></div>
+            <div class="prompt-row"><code>sample(prompt)</code><span>“131”</span></div>
+            <div class="prompt-row"><code>sample(prompt)</code><span>“131”</span></div>
+            <p>Every call reuses one response. Metrics that assume independent samples now measure copies.</p>
+          </article>
+
+          <article class="tension-card mnimi-card reveal">
+            <div class="card-topline"><span>Mnimi</span><b>typed semantics</b></div>
+            <h3>Reuse where stable. Resample where independent.</h3>
+            <div class="scope-row"><code>Repeatable(model)</code><span>same sequence</span></div>
+            <div class="scope-arrow" aria-hidden="true">wrap the reference ↓</div>
+            <div class="scope-row accent"><code>Independent(model)</code><span>fresh sequence</span></div>
+            <p>Decorators express the statistical contract without coupling workflow logic to cache bookkeeping.</p>
+          </article>
+        </div>
+
+        <figure id="sampling-demo" class="sampling-demo reveal" data-mode="repeatable">
+          <figcaption>
+            <div>
+              <p class="section-label">Try the semantics</p>
+              <h3>One cached sequence. Two ways to consume it.</h3>
+            </div>
+            <div class="mode-switch" aria-label="Sampling behavior">
+              <button type="button" data-sampling-mode="repeatable" aria-pressed="true">Repeatable</button>
+              <button type="button" data-sampling-mode="independent" aria-pressed="false">Independent</button>
+            </div>
+          </figcaption>
+
+          <div class="sequence-source">
+            <span class="source-label">Cached response sequence</span>
+            <div class="source-values" aria-label="Cached values 131, 561, 452, and 980">
+              <b>131</b><b>561</b><b>452</b><b>980</b><i>…</i>
+            </div>
+          </div>
+
+          <div class="sample-calls" aria-live="polite">
+            <article>
+              <span>call 01</span>
+              <code>sample(prompt)</code>
+              <strong data-sample-value="0">131</strong>
+            </article>
+            <article>
+              <span>call 02</span>
+              <code>sample(prompt)</code>
+              <strong data-sample-value="1">131</strong>
+            </article>
+            <article>
+              <span>call 03</span>
+              <code>sample(prompt)</code>
+              <strong data-sample-value="2">131</strong>
+            </article>
+          </div>
+
+          <div class="demo-explanation">
+            <p data-sampling-explanation><strong>Repeatable</strong> creates a new iterator at the start of the cached sequence for every call, so each call begins with <code>131</code>.</p>
+            <span class="demo-rule">independent within a sequence · repeatable across calls</span>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <section id="pattern" class="section">
+      <div class="shell">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">The design pattern</p>
+            <h2>Statistical intent, composed like decorators.</h2>
+          </div>
+          <p>Every model exposes one small interface: <code>sample(prompt) → Iterator[str]</code>. Wrapping the reference changes how sequences are consumed—not the workflow that consumes them.</p>
+        </div>
+
+        <div class="pattern-stage reveal" role="img" aria-label="A model service wrapped by persistent, independent, and in-memory cache layers">
+          <div class="layer layer-workflow">
+            <span>algorithm scope</span>
+            <code>repair_attempt(model)</code>
+          </div>
+          <div class="connector"><span>receives</span></div>
+          <div class="layer layer-memory">
+            <div><span>Repeatable</span><small>InMemory</small></div>
+            <p>Reuse samples inside this attempt</p>
+          </div>
+          <div class="connector"><span>wraps</span></div>
+          <div class="layer layer-independent">
+            <div><span>Independent</span><small>iterator state</small></div>
+            <p>Advance to fresh samples across attempts</p>
+          </div>
+          <div class="connector"><span>wraps</span></div>
+          <div class="layer layer-persistent">
+            <div><span>Repeatable</span><small>Persistent</small></div>
+            <p>Replay the same response sequence across runs</p>
+          </div>
+          <div class="connector"><span>wraps</span></div>
+          <div class="layer layer-service">
+            <div><span>ModelService</span><small>provider</small></div>
+            <p>Generate only when the cache has no sample</p>
+          </div>
+        </div>
+
+        <div class="pattern-principles">
+          <article class="reveal">
+            <span class="principle-number">01</span>
+            <h3>Stability within a scope</h3>
+            <p><code>Repeatable</code> returns the same independent sequence for matching prompts, starting from its beginning on every call.</p>
+          </article>
+          <article class="reveal">
+            <span class="principle-number">02</span>
+            <h3>Diversity across scopes</h3>
+            <p><code>Independent</code> shares and advances iterator state, so later calls consume responses not used by earlier calls.</p>
+          </article>
+          <article class="reveal">
+            <span class="principle-number">03</span>
+            <h3>Continuity across runs</h3>
+            <p><code>Persistent</code> records response sequences on disk, enabling deterministic replay and incremental experiments.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="evidence" class="section section-ink">
+      <div class="shell">
+        <div class="section-heading evidence-heading">
+          <div>
+            <p class="section-label">SpecFix case study</p>
+            <h2>Re-run the experiment. Not the invoice.</h2>
+          </div>
+          <p>On 100 HumanEval+ tasks, Mnimi preserved the independence constraints of SpecFix while allowing completed workloads to replay byte-for-byte without contacting the API.</p>
+        </div>
+
+        <div class="result-strip">
+          <article><strong>0</strong><span>tokens on cached replay</span></article>
+          <article><strong>0.0s</strong><span>API time on cached replay</span></article>
+          <article><strong>$0.00</strong><span>query cost on cached replay</span></article>
+          <article><strong>100</strong><span>HumanEval+ tasks</span></article>
+        </div>
+
+        <div class="table-wrap reveal">
+          <table>
+            <caption>Token usage, API time, and query cost for SpecFix with and without Mnimi.</caption>
+            <thead>
+              <tr>
+                <th scope="col">Run configuration</th>
+                <th scope="col">Prompt</th>
+                <th scope="col">Completion</th>
+                <th scope="col">Total</th>
+                <th scope="col">API time</th>
+                <th scope="col">Cost</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Baseline <small>C=20, E=10</small></th><td>97,669</td><td>319,814</td><td>417,483</td><td>1,716.1s</td><td>$1.10</td></tr>
+              <tr class="cached-row"><th scope="row">Cached replay <small>C=20, E=10</small></th><td>0</td><td>0</td><td>0</td><td>0.0s</td><td>$0.00</td></tr>
+              <tr><th scope="row">No cache <small>C=40, E=10</small></th><td>100,733</td><td>500,792</td><td>601,525</td><td>2,344.9s</td><td>$1.68</td></tr>
+              <tr><th scope="row">First cached <small>C=40, E=10</small></th><td>50,885</td><td>250,349</td><td>301,234</td><td>867.5s</td><td>$0.84</td></tr>
+              <tr class="cached-row"><th scope="row">Cached replay <small>C=40, E=10</small></th><td>0</td><td>0</td><td>0</td><td>0.0s</td><td>$0.00</td></tr>
+              <tr><th scope="row">No cache <small>C=20, E=20</small></th><td>94,207</td><td>402,743</td><td>496,950</td><td>2,234.6s</td><td>$1.36</td></tr>
+              <tr><th scope="row">First cached <small>C=20, E=20</small></th><td>2,941</td><td>32,872</td><td>35,813</td><td>93.9s</td><td>$0.11</td></tr>
+              <tr class="cached-row"><th scope="row">Cached replay <small>C=20, E=20</small></th><td>0</td><td>0</td><td>0</td><td>0.0s</td><td>$0.00</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note">C is the number of generated programs; E is the number of generated tests. “First cached” pays only for generations missing from the existing cache.</p>
+      </div>
+    </section>
+
+    <section class="section implementation-section">
+      <div class="shell">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">The implementation</p>
+            <h2>A small cache with a precise contract.</h2>
+          </div>
+          <p>The reference Python implementation is intentionally easy to adopt: one file, no dependencies, and one sampling interface that works across providers.</p>
+        </div>
+
+        <div class="code-window reveal">
+          <div class="window-bar"><span></span><span></span><span></span><b>agentic_workflow.py</b></div>
+          <pre><code><span class="code-muted"># Persist responses across program runs</span>
+model = Persistent(model, <span class="code-string">"~/.llm_cache"</span>)
+
+<span class="code-keyword">for</span> attempt <span class="code-keyword">in</span> range(NUM_RETRIES):
+    <span class="code-muted"># Fresh response sequence for every retry</span>
+    independent = Independent(model)
+
+    <span class="code-muted"># Stable responses inside this attempt</span>
+    repeatable = Repeatable(independent)
+    result = run_pipeline(repeatable)
+    <span class="code-keyword">if</span> result.valid:
+        <span class="code-keyword">break</span></code></pre>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature reveal"><span>~300 LOC</span><h3>Single-file core</h3><p>Copy <code>cached_llm.py</code> into a project and start with <code>sample(prompt)</code>.</p></article>
+          <article class="feature reveal"><span>Batch</span><h3>Provider-aware sampling</h3><p>Request logical batches independent of each provider’s maximum batch size.</p></article>
+          <article class="feature reveal"><span>Slice</span><h3>Share minimal caches</h3><p>Extract exactly the cached responses used by one experiment for replication.</p></article>
+          <article class="feature reveal"><span>Replay</span><h3>Cache-only mode</h3><p>Raise on a cache miss, proving that a replication run never contacts the model.</p></article>
+        </div>
+
+        <div class="implementation-cta">
+          <p>Bring statistical memory to your next LLM workflow.</p>
+          <a class="button button-primary" href="https://github.com/msv-lab/mnimi" target="_blank" rel="noopener">Explore the code <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section id="cite" class="section section-tint">
+      <div class="shell cite-layout">
+        <div>
+          <p class="section-label">Citation</p>
+          <h2>Remember Mnimi in your bibliography.</h2>
+          <p>Published in the proceedings of the 3rd International Workshop on Large Language Models For Code, co-located with ICSE 2026.</p>
+          <div class="citation-links">
+            <a href="https://dl.acm.org/doi/10.1145/3786181.3788729" target="_blank" rel="noopener">ACM Digital Library ↗</a>
+            <a href="https://arxiv.org/abs/2511.22118" target="_blank" rel="noopener">arXiv:2511.22118 ↗</a>
+          </div>
+        </div>
+        <div class="citation-wrap">
+          <button class="copy-button" type="button" data-copy-citation>Copy BibTeX</button>
+          <pre id="bibtex"><code>@inproceedings{dai2026mnimi,
+  author    = {Yihan Dai and Dimitrios Stamatios Bouras and
+               Haoxiang Jia and Sergey Mechtaev},
+  title     = {Statistical Independence Aware Caching for
+               {LLM} Workflows},
+  booktitle = {3rd International Workshop on Large Language
+               Models For Code (LLM4Code '26)},
+  year      = {2026},
+  doi       = {10.1145/3786181.3788729}
+}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="people" class="section people-section">
+      <div class="shell">
+        <div class="section-heading people-heading">
+          <div>
+            <p class="section-label">People</p>
+            <h2>From Peking University.</h2>
+          </div>
+          <p>Key Laboratory of High Confidence Software Technologies, Ministry of Education, School of Computer Science.</p>
+        </div>
+
+        <div class="people-grid">
+          <article class="person reveal">
+            <p class="person-role">First author</p>
+            <h3>Yihan Dai</h3>
+            <div class="person-links">
+              <a href="mailto:yhdai25@stu.pku.edu.cn">Email</a>
+              <a href="https://scholar.google.com/citations?user=Ra2pxQUAAAAJ&amp;hl=en" target="_blank" rel="noopener">Google Scholar ↗</a>
+            </div>
+          </article>
+          <article class="person reveal">
+            <p class="person-role">Author</p>
+            <h3>Dimitrios Stamatios Bouras</h3>
+            <div class="person-links">
+              <a href="mailto:2501112125@stu.pku.edu.cn">Email</a>
+              <a href="https://bouras.online" target="_blank" rel="noopener">Website ↗</a>
+              <a href="https://scholar.google.com/citations?user=SAT5NjIAAAAJ&amp;hl=en" target="_blank" rel="noopener">Scholar ↗</a>
+            </div>
+          </article>
+          <article class="person reveal">
+            <p class="person-role">Author</p>
+            <h3>Haoxiang Jia</h3>
+            <div class="person-links">
+              <a href="mailto:haoxiangjia@stu.pku.edu.cn">Email</a>
+              <a href="https://scholar.google.com/citations?user=3LH8plsAAAAJ&amp;hl=zh-CN" target="_blank" rel="noopener">Google Scholar ↗</a>
+            </div>
+          </article>
+          <article class="person reveal">
+            <p class="person-role">Author</p>
+            <h3>Sergey Mechtaev</h3>
+            <div class="person-links">
+              <a href="mailto:mechtaev@pku.edu.cn">Email</a>
+              <a href="https://mechtaev.com/" target="_blank" rel="noopener">Website ↗</a>
+              <a href="https://scholar.google.com/citations?user=XTFR93cAAAAJ&amp;hl=en" target="_blank" rel="noopener">Scholar ↗</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-shell">
+      <a class="wordmark" href="#top">
+        <img class="mnimi-mark wordmark-mark" src="assets/mnimi-logo.svg" alt="">
+        <span>Mnimi</span><b>.</b>
+      </a>
+      <p>Statistical independence aware caching for LLM workflows.</p>
+      <a href="https://github.com/msv-lab/mnimi" target="_blank" rel="noopener">msv-lab/mnimi ↗</a>
+    </div>
+  </footer>
+</body>
+</html>
