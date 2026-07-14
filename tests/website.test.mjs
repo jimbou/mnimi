@@ -18,7 +18,8 @@ const workflow = read(".github/workflows/pages.yml");
 
 test("publishes the paper identity and requested research links", () => {
   assert.match(html, /Statistical Independence Aware Caching for LLM Workflows/);
-  assert.match(html, /class="paper-subtitle">Statistical Independence Aware Caching for LLM Workflows<\/p>/);
+  assert.match(html, /<h1>Statistical Independence Aware Caching for <em>LLM Workflows<\/em><\/h1>/);
+  assert.match(html, /class="paper-subtitle">Cache LLM responses\. Keep the statistics honest\.<\/p>/);
   assert.match(html, /LLM4Code[^<]*2026/i);
   assert.match(html, /dl\.acm\.org\/doi\/10\.1145\/3786181\.3788729/);
   assert.match(html, /arxiv\.org\/abs\/2511\.22118/);
@@ -34,7 +35,8 @@ test("contains the explanatory, evidence, citation, and people sections", () => 
   assert.match(html, /Game 03 · Alice/);
   assert.match(html, /same interval must produce the same number within a game/i);
   assert.match(html, /new game must receive independent samples/i);
-  assert.match(html, /<pre class="scope-code"><code>/);
+  assert.match(html, /data-code-mode="nested"/);
+  assert.match(html, /data-code-mode="flat"/);
   assert.match(html, /<i>for<\/i> interval <i>in<\/i> intervals:/);
   assert.match(html, /Independent\(model\)/);
   assert.match(html, /InMemory\(independent\)/);
@@ -42,6 +44,14 @@ test("contains the explanatory, evidence, citation, and people sections", () => 
   assert.match(html, /Cached replay/);
   assert.match(html, /data-copy-citation/);
   assert.match(html, /id="people"/);
+});
+
+test("shows a genuinely simple cache in flat-cache mode", () => {
+  const flatCode = html.match(/<pre class="scope-code" data-code-mode="flat" hidden><code>([\s\S]*?)<\/code><\/pre>/)?.[1];
+  assert.ok(flatCode, "expected a dedicated flat-cache code sample");
+  assert.match(flatCode, /Persistent\(model/);
+  assert.doesNotMatch(flatCode, /Independent|InMemory/);
+  assert.match(script, /data-code-mode/);
 });
 
 test("uses accessible document structure", () => {

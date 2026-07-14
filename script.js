@@ -3,6 +3,7 @@ const samplingDemo = document.querySelector("#sampling-demo");
 if (samplingDemo) {
   const samplingButtons = samplingDemo.querySelectorAll("[data-sampling-mode]");
   const sampleValues = samplingDemo.querySelectorAll("[data-sample-value]");
+  const codeBlocks = samplingDemo.querySelectorAll("[data-code-mode]");
   const explanation = samplingDemo.querySelector("[data-sampling-explanation]");
   const rule = samplingDemo.querySelector(".demo-rule");
 
@@ -29,6 +30,9 @@ if (samplingDemo) {
     });
     sampleValues.forEach((value, index) => {
       value.textContent = mode.values[index];
+    });
+    codeBlocks.forEach((block) => {
+      block.hidden = block.dataset.codeMode !== modeName;
     });
     explanation.innerHTML = mode.explanation;
     rule.textContent = mode.rule;

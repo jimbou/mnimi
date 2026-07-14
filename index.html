@@ -55,8 +55,8 @@
       <div class="shell hero-grid">
         <div class="hero-copy">
           <p class="eyebrow">LLM4Code · ICSE 2026 · Rio de Janeiro</p>
-          <h1>Cache LLM responses. <em>Keep the statistics honest.</em></h1>
-          <p class="paper-subtitle">Statistical Independence Aware Caching for LLM Workflows</p>
+          <h1>Statistical Independence Aware Caching for <em>LLM Workflows</em></h1>
+          <p class="paper-subtitle">Cache LLM responses. Keep the statistics honest.</p>
           <p class="authors-line">Yihan Dai <span>·</span> Dimitrios Stamatios Bouras <span>·</span> Haoxiang Jia <span>·</span> Sergey Mechtaev</p>
           <div class="hero-actions">
             <a class="button button-primary" href="https://dl.acm.org/doi/10.1145/3786181.3788729" target="_blank" rel="noopener">Read at ACM <span aria-hidden="true">↗</span></a>
@@ -135,7 +135,7 @@
             <p><strong>The constraint.</strong> The same interval must produce the same number within a game. A new game must receive independent samples, even when the same player returns.</p>
           </div>
 
-          <pre class="scope-code"><code><span>model</span> = Persistent(model, <b>"/cache"</b>)
+          <pre class="scope-code" data-code-mode="nested"><code><span>model</span> = Persistent(model, <b>"/cache"</b>)
 <span>independent</span> = Independent(model)
 
 <i>for</i> user <i>in</i> [<b>"Alice"</b>, <b>"Bob"</b>, <b>"Alice"</b>]:
@@ -143,6 +143,13 @@
     <i>for</i> interval <i>in</i> intervals:
         prompt = template.format(user=user, interval=interval)
         response = next(repeatable.sample(prompt))</code></pre>
+
+          <pre class="scope-code" data-code-mode="flat" hidden><code><span>model</span> = Persistent(model, <b>"/cache"</b>)
+
+<i>for</i> user <i>in</i> [<b>"Alice"</b>, <b>"Bob"</b>, <b>"Alice"</b>]:
+    <i>for</i> interval <i>in</i> intervals:
+        prompt = template.format(user=user, interval=interval)
+        response = next(model.sample(prompt))</code></pre>
 
           <div class="game-grid" aria-live="polite">
             <article class="game-card" data-game="1">

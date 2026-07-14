@@ -311,6 +311,7 @@ h1 em { color: var(--blue); font-style: normal; }
 .example-brief strong { color: var(--ink); }
 .example-brief code { font-size: 0.78em; }
 .scope-code { display: block; overflow-x: auto; margin: 0; padding: 23px 30px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--blue-wash) 40%, var(--surface)); white-space: pre; }
+.scope-code[hidden] { display: none; }
 .scope-code code { color: var(--ink-soft); font-size: 0.72rem; line-height: 1.7; }
 .scope-code span { color: var(--blue-deep); }
 .scope-code b { color: var(--amber-deep); font-weight: 500; }
