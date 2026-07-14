@@ -7,15 +7,15 @@ if (samplingDemo) {
   const rule = samplingDemo.querySelector(".demo-rule");
 
   const modes = {
-    repeatable: {
-      values: ["131", "131", "131"],
-      explanation: "<strong>Repeatable</strong> creates a new iterator at the start of the cached sequence for every call, so each call begins with <code>131</code>.",
-      rule: "independent within a sequence · repeatable across calls",
+    nested: {
+      values: ["2", "1393", "2", "297", "1740", "297", "68", "1002", "68"],
+      explanation: "<strong>Nested scopes:</strong> repeated intervals reuse a value within each game (<code>2 → 2</code>), while Alice’s later game receives an independent value (<code>2 → 68</code>).",
+      rule: "repeatable within a game · independent across games",
     },
-    independent: {
-      values: ["131", "561", "452"],
-      explanation: "<strong>Independent</strong> shares iterator state across calls. Each call advances through the cached sequence, preserving fresh samples without generating them again.",
-      rule: "consumptive across calls · reproducible across runs",
+    flat: {
+      values: ["2", "1393", "2", "297", "1740", "297", "2", "1393", "2"],
+      explanation: "<strong>Flat cache:</strong> repeatability still works inside each game, but Alice’s later game replays her first responses (<code>2 → 2</code>) instead of receiving independent samples.",
+      rule: "repeatable everywhere · independence lost across games",
     },
   };
 

@@ -56,7 +56,7 @@
         <div class="hero-copy">
           <p class="eyebrow">LLM4Code · ICSE 2026 · Rio de Janeiro</p>
           <h1>Cache LLM responses. <em>Keep the statistics honest.</em></h1>
-          <p class="lede"><strong>Mnimi</strong> encodes statistical independence in the type of an LLM reference—making workflows reproducible, faster, and cheaper without collapsing the variation their algorithms need.</p>
+          <p class="paper-subtitle">Statistical Independence Aware Caching for LLM Workflows</p>
           <p class="authors-line">Yihan Dai <span>·</span> Dimitrios Stamatios Bouras <span>·</span> Haoxiang Jia <span>·</span> Sergey Mechtaev</p>
           <div class="hero-actions">
             <a class="button button-primary" href="https://dl.acm.org/doi/10.1145/3786181.3788729" target="_blank" rel="noopener">Read at ACM <span aria-hidden="true">↗</span></a>
@@ -68,12 +68,9 @@
 
         <aside class="hero-emblem" aria-label="Mnimi at a glance">
           <div class="logo-orbit">
-            <span class="orbit-dot orbit-one"></span>
-            <span class="orbit-dot orbit-two"></span>
-            <span class="orbit-dot orbit-three"></span>
             <img class="mnimi-mark hero-mark" src="assets/mnimi-logo.svg" alt="Mnimi, the Muse of memory">
           </div>
-          <p class="note-kicker">Μνήμη · memory</p>
+          <p class="note-kicker">ΜΝΗΜΗ · memory</p>
           <p>Named for the primordial Muse of remembrance: structured memory for stochastic software.</p>
           <dl>
             <div><dt>Reuse</dt><dd>Repeatable</dd></div>
@@ -121,46 +118,49 @@
           </article>
         </div>
 
-        <figure id="sampling-demo" class="sampling-demo reveal" data-mode="repeatable">
+        <figure id="sampling-demo" class="sampling-demo reveal" data-mode="nested">
           <figcaption>
             <div>
-              <p class="section-label">Try the semantics</p>
-              <h3>One cached sequence. Two ways to consume it.</h3>
+              <p class="section-label">Motivating example</p>
+              <h3>One workflow. Two statistical scopes.</h3>
             </div>
             <div class="mode-switch" aria-label="Sampling behavior">
-              <button type="button" data-sampling-mode="repeatable" aria-pressed="true">Repeatable</button>
-              <button type="button" data-sampling-mode="independent" aria-pressed="false">Independent</button>
+              <button type="button" data-sampling-mode="nested" aria-pressed="true">Nested scopes</button>
+              <button type="button" data-sampling-mode="flat" aria-pressed="false">Flat cache</button>
             </div>
           </figcaption>
 
-          <div class="sequence-source">
-            <span class="source-label">Cached response sequence</span>
-            <div class="source-values" aria-label="Cached values 131, 561, 452, and 980">
-              <b>131</b><b>561</b><b>452</b><b>980</b><i>…</i>
-            </div>
+          <div class="scope-code" aria-label="Persistent model wrapped by independent sampling across games and in-memory repeatability within each game">
+            <code><span>model</span> = Persistent(model, <b>"/cache"</b>)</code>
+            <code><span>independent</span> = Independent(model)</code>
+            <code><i>for</i> user <i>in</i> [<b>"Alice"</b>, <b>"Bob"</b>, <b>"Alice"</b>]:</code>
+            <code>&nbsp;&nbsp;<span>repeatable</span> = InMemory(independent)</code>
           </div>
 
-          <div class="sample-calls" aria-live="polite">
-            <article>
-              <span>call 01</span>
-              <code>sample(prompt)</code>
-              <strong data-sample-value="0">131</strong>
+          <div class="game-grid" aria-live="polite">
+            <article class="game-card" data-game="1">
+              <div class="game-head"><span>Game 01 · Alice</span><b>new scope</b></div>
+              <div class="round"><code>[1, 1000]</code><strong data-sample-value="0">2</strong></div>
+              <div class="round"><code>[1001, 2000]</code><strong data-sample-value="1">1393</strong></div>
+              <div class="round repeated"><code>[1, 1000]</code><strong data-sample-value="2">2</strong></div>
             </article>
-            <article>
-              <span>call 02</span>
-              <code>sample(prompt)</code>
-              <strong data-sample-value="1">131</strong>
+            <article class="game-card" data-game="2">
+              <div class="game-head"><span>Game 02 · Bob</span><b>new scope</b></div>
+              <div class="round"><code>[1, 1000]</code><strong data-sample-value="3">297</strong></div>
+              <div class="round"><code>[1001, 2000]</code><strong data-sample-value="4">1740</strong></div>
+              <div class="round repeated"><code>[1, 1000]</code><strong data-sample-value="5">297</strong></div>
             </article>
-            <article>
-              <span>call 03</span>
-              <code>sample(prompt)</code>
-              <strong data-sample-value="2">131</strong>
+            <article class="game-card game-return" data-game="3">
+              <div class="game-head"><span>Game 03 · Alice</span><b>independent</b></div>
+              <div class="round"><code>[1, 1000]</code><strong data-sample-value="6">68</strong></div>
+              <div class="round"><code>[1001, 2000]</code><strong data-sample-value="7">1002</strong></div>
+              <div class="round repeated"><code>[1, 1000]</code><strong data-sample-value="8">68</strong></div>
             </article>
           </div>
 
           <div class="demo-explanation">
-            <p data-sampling-explanation><strong>Repeatable</strong> creates a new iterator at the start of the cached sequence for every call, so each call begins with <code>131</code>.</p>
-            <span class="demo-rule">independent within a sequence · repeatable across calls</span>
+            <p data-sampling-explanation><strong>Nested scopes:</strong> repeated intervals reuse a value within each game (<code>2 → 2</code>), while Alice’s later game receives an independent value (<code>2 → 68</code>).</p>
+            <span class="demo-rule">repeatable within a game · independent across games</span>
           </div>
         </figure>
       </div>
