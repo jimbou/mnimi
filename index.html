@@ -62,7 +62,7 @@
             <a class="button button-primary" href="https://dl.acm.org/doi/10.1145/3786181.3788729" target="_blank" rel="noopener">Read at ACM <span aria-hidden="true">↗</span></a>
             <a class="button button-secondary" href="https://arxiv.org/abs/2511.22118" target="_blank" rel="noopener">arXiv <span aria-hidden="true">↗</span></a>
             <a class="button button-secondary" href="https://github.com/msv-lab/mnimi" target="_blank" rel="noopener">Code <span aria-hidden="true">↗</span></a>
-            <a class="button button-quiet" href="assets/mnimi-paper.pdf">PDF <span aria-hidden="true">↓</span></a>
+            <a class="button button-secondary" href="assets/mnimi-paper.pdf">PDF <span aria-hidden="true">↓</span></a>
           </div>
         </div>
 
@@ -130,12 +130,19 @@
             </div>
           </figcaption>
 
-          <div class="scope-code" aria-label="Persistent model wrapped by independent sampling across games and in-memory repeatability within each game">
-            <code><span>model</span> = Persistent(model, <b>"/cache"</b>)</code>
-            <code><span>independent</span> = Independent(model)</code>
-            <code><i>for</i> user <i>in</i> [<b>"Alice"</b>, <b>"Bob"</b>, <b>"Alice"</b>]:</code>
-            <code>&nbsp;&nbsp;<span>repeatable</span> = InMemory(independent)</code>
+          <div class="example-brief">
+            <p><strong>The game.</strong> Alice, Bob, and then Alice again each play three rounds, asking for numbers from <code>[1, 1000]</code>, <code>[1001, 2000]</code>, and <code>[1, 1000]</code>.</p>
+            <p><strong>The constraint.</strong> The same interval must produce the same number within a game. A new game must receive independent samples, even when the same player returns.</p>
           </div>
+
+          <pre class="scope-code"><code><span>model</span> = Persistent(model, <b>"/cache"</b>)
+<span>independent</span> = Independent(model)
+
+<i>for</i> user <i>in</i> [<b>"Alice"</b>, <b>"Bob"</b>, <b>"Alice"</b>]:
+    <span>repeatable</span> = InMemory(independent)
+    <i>for</i> interval <i>in</i> intervals:
+        prompt = template.format(user=user, interval=interval)
+        response = next(repeatable.sample(prompt))</code></pre>
 
           <div class="game-grid" aria-live="polite">
             <article class="game-card" data-game="1">
@@ -373,7 +380,7 @@ model = Persistent(model, <span class="code-string">"~/.llm_cache"</span>)
             </div>
           </article>
           <article class="person reveal">
-            <p class="person-role">Author</p>
+            <p class="person-role">Corresponding author</p>
             <h3>Sergey Mechtaev</h3>
             <div class="person-links">
               <a href="mailto:mechtaev@pku.edu.cn">Email</a>

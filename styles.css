@@ -306,8 +306,12 @@ h1 em { color: var(--blue); font-style: normal; }
 .mode-switch { display: inline-flex; padding: 4px; border: 1px solid var(--line); border-radius: 9px; background: var(--paper-tint); }
 .mode-switch button { min-height: 39px; padding: 7px 12px; color: var(--muted); border: 0; border-radius: 6px; background: transparent; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
 .mode-switch button[aria-pressed="true"] { color: #fff; background: var(--blue-deep); box-shadow: 0 3px 10px rgba(16, 40, 50, 0.16); }
-.scope-code { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 24px; padding: 22px 30px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--blue-wash) 40%, var(--surface)); }
-.scope-code code { color: var(--ink-soft); font-size: 0.72rem; }
+.example-brief { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; padding: 23px 30px; border-bottom: 1px solid var(--line); }
+.example-brief p { margin: 0; color: var(--ink-soft); font-size: 0.88rem; line-height: 1.5; }
+.example-brief strong { color: var(--ink); }
+.example-brief code { font-size: 0.78em; }
+.scope-code { display: block; overflow-x: auto; margin: 0; padding: 23px 30px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--blue-wash) 40%, var(--surface)); white-space: pre; }
+.scope-code code { color: var(--ink-soft); font-size: 0.72rem; line-height: 1.7; }
 .scope-code span { color: var(--blue-deep); }
 .scope-code b { color: var(--amber-deep); font-weight: 500; }
 .scope-code i { color: var(--blue); font-style: normal; }
@@ -461,7 +465,7 @@ footer { border-top: 1px solid var(--line); }
   .pattern-principles article + article { border-top: 1px solid var(--line); border-left: 0; }
   .pattern-principles article { min-height: 0; }
   .sampling-demo figcaption { align-items: start; flex-direction: column; }
-  .scope-code { grid-template-columns: 1fr; }
+  .example-brief { grid-template-columns: 1fr; gap: 12px; }
   .demo-explanation { align-items: start; flex-direction: column; gap: 12px; }
   .demo-rule { text-align: left; }
   .layer { grid-template-columns: 1fr; gap: 9px; }
@@ -479,7 +483,7 @@ footer { border-top: 1px solid var(--line); }
   .logo-orbit { width: 220px; margin: 0 auto 28px; }
   .hero-emblem dl { margin-top: 20px; }
   .tension-card, .pattern-stage { padding: 22px; }
-  .sampling-demo figcaption, .scope-code, .game-grid { padding: 22px; }
+  .sampling-demo figcaption, .example-brief, .scope-code, .game-grid { padding: 22px; }
   .demo-explanation { margin: 0 22px; }
   .mode-switch { width: 100%; }
   .mode-switch button { flex: 1; }

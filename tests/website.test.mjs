@@ -32,6 +32,10 @@ test("contains the explanatory, evidence, citation, and people sections", () => 
   assert.match(html, /data-sampling-mode="flat"/);
   assert.match(html, /Game 01 · Alice/);
   assert.match(html, /Game 03 · Alice/);
+  assert.match(html, /same interval must produce the same number within a game/i);
+  assert.match(html, /new game must receive independent samples/i);
+  assert.match(html, /<pre class="scope-code"><code>/);
+  assert.match(html, /<i>for<\/i> interval <i>in<\/i> intervals:/);
   assert.match(html, /Independent\(model\)/);
   assert.match(html, /InMemory\(independent\)/);
   assert.match(html, /<table[\s>]/);
@@ -53,6 +57,11 @@ test("uses the requested clean Greek wordmark and logo treatment", () => {
   assert.doesNotMatch(html, /ΜΝΉΜΗ|ΜΝΉΜΗ/);
   assert.doesNotMatch(html, /orbit-dot/);
   assert.doesNotMatch(css, /\.orbit-dot/);
+});
+
+test("styles all paper actions consistently and identifies the corresponding author", () => {
+  assert.match(html, /class="button button-secondary" href="assets\/mnimi-paper\.pdf">PDF/);
+  assert.match(html, /<p class="person-role">Corresponding author<\/p>\s*<h3>Sergey Mechtaev<\/h3>/);
 });
 
 test("references local assets that exist", () => {
