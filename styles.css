@@ -429,6 +429,12 @@ footer { border-top: 1px solid var(--line); }
   .reveal { opacity: 1; transform: none; }
 }
 
+@media print {
+  .reveal { opacity: 1; transform: none; }
+  .topbar { position: static; }
+  .progress-track, .copy-button { display: none; }
+}
+
 @media (max-width: 900px) {
   body { font-size: 17px; }
   .hero-grid, .section-heading, .cite-layout { grid-template-columns: 1fr; }

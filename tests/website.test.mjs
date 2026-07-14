@@ -59,6 +59,7 @@ test("defines the responsive portfolio visual system", () => {
   assert.match(css, /\.mnimi-mark/);
   assert.match(css, /@media \(prefers-color-scheme: dark\)/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.match(css, /@media print[\s\S]*?\.reveal\s*\{\s*opacity:\s*1/);
   assert.match(css, /:focus-visible/);
 });
 
